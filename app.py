@@ -1,13 +1,15 @@
 # inicia o flask aq
 from flask import Flask
-from logic_2r.cracha import processar_cracha
+from logic.cracha import processar_cracha
 # requisicao de processamento em outro arquivo pra separacao
-from logic_2r.balanca import processar_peso
+from logic.balanca import processar_peso
 # take the peso e processa the trem
-from logic_2r.caminhao import registrar_caminhao
+from logic.caminhao import registrar_caminhao
+from database.db import criar_tabela
 
 
 app = Flask(__name__)
+criar_tabela()
 
 
 @app.route("/", methods=["GET"])

@@ -1,6 +1,6 @@
 
-from logic_2r.cracha import buscar_placa_por_cracha
-from logic_2r.balanca import validar_peso
+from logic.cracha import buscar_placa_por_cracha
+from logic.balanca import validar_peso
 from database.db import salvar_pesagem
 
 
