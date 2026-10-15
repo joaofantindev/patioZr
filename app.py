@@ -2,6 +2,10 @@
 from flask import Flask
 from logic_2r.cracha import processar_cracha
 # requisicao de processamento em outro arquivo pra separacao
+from logic_2r.balanca import processar_peso
+# take the peso e processa the trem
+from logic_2r.caminhao import registrar_caminhao
+
 
 app = Flask(__name__)
 
@@ -36,9 +40,33 @@ def ler_cracha():
 # testa com:
 # curl -X POST http://127.0.0.1:5000/api/cracha -H "Content-Type: application/json" -d "{\"cracha\":\"123456\"}"
 
+@app.route("/api/pesagem", methods=["POST"])
+def registrar_pesagem():
+    from flask import request
 
+    dados = request.get_json()
 
+    if not isinstance(dados, dict) or "peso" not in dados:
+        return {"erro": "Informe o peso"}, 400
 
+    return processar_peso(dados["peso"])
+
+@app.route("/api/caminhao", methods=["POST"])
+def criar_caminhao():
+    from flask import request
+
+    dados = request.get_json()
+
+    if not isinstance(dados, dict):
+        return {"erro": "JSON invalido"}, 400
+
+    if "cracha" not in dados or "peso" not in dados:
+        return {"erro": "Informe cracha e peso"}, 400
+
+    return registrar_caminhao(
+        dados["cracha"],
+        dados["peso"]
+    )
 
 if __name__ == "__main__":
     app.run(debug=True)
