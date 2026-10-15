@@ -1,11 +1,11 @@
 # inicia o flask aq
-from flask import Flask
+from flask import Flask, render_template
 from logic.cracha import processar_cracha
 # requisicao de processamento em outro arquivo pra separacao
 from logic.balanca import processar_peso
 # take the peso e processa the trem
 from logic.caminhao import registrar_caminhao
-from database.db import criar_tabela
+from database.db import criar_tabela, listar_pesagens
 
 
 app = Flask(__name__)
@@ -14,7 +14,7 @@ criar_tabela()
 
 @app.route("/", methods=["GET"])
 def index():
-    return "Servidor Zella Patio funcionando!"
+    return render_template("index.html")
 
 @app.route("/api/status", methods=["GET"])
 def status():
@@ -24,6 +24,11 @@ def status():
         "balanca": "desconectada",
         "leitor_cracha": "desconectado"
     }
+
+
+@app.route("/api/pesagens", methods=["GET"])
+def pesagens():
+    return {"pesagens": listar_pesagens()}
 
 
 @app.route("/api/cracha", methods=["POST"])
@@ -71,4 +76,4 @@ def criar_caminhao():
     )
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, host="0.0.0.0", port=5000)

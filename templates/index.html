@@ -1,27 +1,416 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Zella Patio</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: #0a0a0a;
+            color: #e0e0e0;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 24px;
+            min-height: 100vh;
+        }
+
+        h1 {
+            font-size: 22px;
+            margin-bottom: 4px;
+        }
+
+        .sub {
+            color: #666;
+            font-size: 12px;
+            margin-bottom: 24px;
+        }
+
+        .status-bar {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 28px;
+            font-size: 13px;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .dot.online  { background-color: #00ff88; }
+        .dot.offline { background-color: #ff4444; }
+
+        section {
+            border: 1px solid #222;
+            padding: 16px;
+            margin-bottom: 20px;
+            background: #0f0f0f;
+        }
+
+        section h2 {
+            font-size: 14px;
+            margin-bottom: 12px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 6px 10px;
+            border-bottom: 1px solid #1a1a1a;
+        }
+
+        th { color: #555; font-weight: normal; }
+
+        tr:last-child td { border-bottom: none; }
+
+        .vazio {
+            color: #444;
+            font-size: 13px;
+        }
+
+        .erro {
+            color: #ff4444;
+            font-size: 13px;
+        }
+
+        .ok {
+            color: #00ff88;
+            font-size: 13px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        label {
+            font-size: 12px;
+            color: #888;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            background: #0a0a0a;
+            border: 1px solid #333;
+            color: #e0e0e0;
+            font-family: inherit;
+            font-size: 14px;
+            padding: 8px 10px;
+            outline: none;
+            width: 100%;
+        }
+
+        input:focus {
+            border-color: #00ff88;
+        }
+
+        button {
+            background: #00ff88;
+            color: #000;
+            border: none;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: bold;
+            padding: 10px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        button:hover {
+            background: #00cc6a;
+        }
+
+        button:disabled {
+            background: #333;
+            color: #666;
+            cursor: not-allowed;
+        }
+
+        #resultado {
+            min-height: 20px;
+            margin-top: 4px;
+        }
+
+        .placa-preview {
+            color: #00ff88;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 4px;
+        }
+
+        .painel {
+            display: flex;
+            gap: 20px;
+            align-items: stretch;
+            flex-wrap: wrap;
+        }
+
+        .painel > section {
+            flex: 1;
+            min-width: 260px;
+            margin-bottom: 0;
+        }
+
+        .log-box {
+            background: #0a0a0a;
+            border: 1px solid #222;
+            height: 100%;
+            min-height: 260px;
+            max-height: 260px;
+            overflow-y: auto;
+            padding: 10px;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .log-box::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .log-box::-webkit-scrollbar-thumb {
+            background: #333;
+        }
+
+        .log-entry {
+            border-bottom: 1px solid #151515;
+            padding: 2px 0;
+        }
+
+        .log-entry .hora {
+            color: #555;
+            margin-right: 8px;
+        }
+
+        .log-entry.erro-log  { color: #ff4444; }
+        .log-entry.ok-log    { color: #00ff88; }
+        .log-entry.info-log  { color: #888; }
+    </style>
 </head>
-<style>
-    body {
-        background-color: black;
-        color: white;
-        font-family: 'Courier New', Courier, monospace;
-    }
-    
-</style>
 <body>
-    <!--exibir os dados de forma simples  e direta-->
-    <h1>entrada: </h1>
-    <!--valida ou nao-->
-    <p>nome motorista: </p>
-    <p>placa: </p>
-    <p>peso: </p>
-    <hr>
-    <h3>logs</h3>
-    <p></p>
+    <h1>ZELLA PATIO</h1>
+    <p class="sub">dashboard de pesagens</p>
+
+    <div class="status-bar">
+        <div class="status-item">
+            <span class="dot" id="dot-servidor"></span>
+            <span id="txt-servidor">...</span>
+        </div>
+        <div class="status-item">
+            <span class="dot" id="dot-balanca"></span>
+            <span id="txt-balanca">...</span>
+        </div>
+        <div class="status-item">
+            <span class="dot" id="dot-cracha"></span>
+            <span id="txt-cracha">...</span>
+        </div>
+    </div>
+
+    <div class="painel">
+        <section>
+            <h2>Registrar pesagem</h2>
+            <form id="form-pesagem">
+                <div>
+                    <label for="cracha">crachá</label>
+                    <input type="text" id="cracha" placeholder="ex: 123456" required autocomplete="off">
+                    <div id="placa-preview" class="placa-preview"></div>
+                </div>
+                <div>
+                    <label for="peso">peso (kg)</label>
+                    <input type="number" id="peso" placeholder="ex: 1500" step="0.01" min="0.01" required>
+                </div>
+                <button type="submit" id="btn-registrar">registrar</button>
+                <div id="resultado"></div>
+            </form>
+        </section>
+
+        <section>
+            <h2>Log de erros</h2>
+            <div id="log" class="log-box">
+                <p class="vazio">nenhum erro</p>
+            </div>
+        </section>
+    </div>
+
+    <section>
+        <h2>Pesagens recentes</h2>
+        <div id="lista">
+            <p class="vazio">carregando...</p>
+        </div>
+    </section>
+
+    <script>
+        function setDot(id, ok) {
+            document.getElementById(id).className = "dot " + (ok ? "online" : "offline");
+        }
+
+        const inputCracha = document.getElementById("cracha");
+        const inputPeso = document.getElementById("peso");
+        const placaPreview = document.getElementById("placa-preview");
+        const resultado = document.getElementById("resultado");
+        const btnRegistrar = document.getElementById("btn-registrar");
+        const logBox = document.getElementById("log");
+
+        function logErro(msg) {
+            const agora = new Date().toLocaleTimeString("pt-BR");
+            const div = document.createElement("div");
+            div.className = "log-entry erro-log";
+            div.innerHTML = `<span class="hora">${agora}</span>${msg}`;
+
+            const vazio = logBox.querySelector(".vazio");
+            if (vazio) vazio.remove();
+
+            logBox.prepend(div);
+
+            while (logBox.children.length > 50) {
+                logBox.removeChild(logBox.lastChild);
+            }
+        }
+
+        inputCracha.addEventListener("blur", async () => {
+            const valor = inputCracha.value.trim();
+            placaPreview.textContent = "";
+            placaPreview.className = "placa-preview";
+
+            if (!valor) return;
+
+            try {
+                const r = await fetch("/api/cracha", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ cracha: valor })
+                });
+                const d = await r.json();
+
+                if (r.ok) {
+                    placaPreview.textContent = "placa: " + d.placa;
+                } else {
+                    placaPreview.textContent = d.erro || "crachá inválido";
+                    placaPreview.className = "placa-preview erro";
+                    logErro("crachá \"" + valor + "\": " + (d.erro || "inválido"));
+                }
+            } catch {
+                placaPreview.textContent = "erro de conexão";
+                placaPreview.className = "placa-preview erro";
+                logErro("falha ao consultar crachá \"" + valor + "\"");
+            }
+        });
+
+        document.getElementById("form-pesagem").addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const cracha = inputCracha.value.trim();
+            const peso = inputPeso.value;
+
+            if (!cracha || !peso) {
+                resultado.textContent = "preencha crachá e peso";
+                resultado.className = "erro";
+                logErro("formulário incompleto (crachá: \"" + cracha + "\", peso: \"" + peso + "\")");
+                return;
+            }
+
+            btnRegistrar.disabled = true;
+            resultado.textContent = "registrando...";
+            resultado.className = "";
+
+            try {
+                const r = await fetch("/api/caminhao", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ cracha, peso })
+                });
+                const d = await r.json();
+
+                if (r.ok) {
+                    resultado.textContent = "ok — " + d.dados.placa + " | " + d.dados.peso + " kg";
+                    resultado.className = "ok";
+                    inputCracha.value = "";
+                    inputPeso.value = "";
+                    placaPreview.textContent = "";
+                    atualizarPesagens();
+                } else {
+                    resultado.textContent = d.erro || "erro ao registrar";
+                    resultado.className = "erro";
+                    logErro("registro falhou (crachá \"" + cracha + "\", peso " + peso + "): " + (d.erro || "erro desconhecido"));
+                }
+            } catch {
+                resultado.textContent = "erro de conexão";
+                resultado.className = "erro";
+                logErro("falha de conexão ao registrar crachá \"" + cracha + "\"");
+            } finally {
+                btnRegistrar.disabled = false;
+            }
+        });
+
+        async function atualizarStatus() {
+            try {
+                const r = await fetch("/api/status");
+                const d = await r.json();
+                document.getElementById("txt-servidor").textContent = "servidor: " + d.status;
+                document.getElementById("txt-balanca").textContent = "balanca: " + d.balanca;
+                document.getElementById("txt-cracha").textContent = "leitor cracha: " + d.leitor_cracha;
+                setDot("dot-servidor", d.status === "online");
+                setDot("dot-balanca", d.balanca === "conectada");
+                setDot("dot-cracha", d.leitor_cracha === "conectado");
+            } catch {
+                document.getElementById("txt-servidor").textContent = "servidor: offline";
+                setDot("dot-servidor", false);
+            }
+        }
+
+        async function atualizarPesagens() {
+            const el = document.getElementById("lista");
+            try {
+                const r = await fetch("/api/pesagens");
+                const d = await r.json();
+
+                if (!d.pesagens || d.pesagens.length === 0) {
+                    el.innerHTML = '<p class="vazio">nenhuma pesagem registrada</p>';
+                    return;
+                }
+
+                let html = "<table><tr><th>#</th><th>cracha</th><th>placa</th><th>peso</th><th>data</th></tr>";
+                for (const p of d.pesagens) {
+                    html += `<tr>
+                        <td>${p.id}</td>
+                        <td>${p.cracha}</td>
+                        <td>${p.placa}</td>
+                        <td>${p.peso} ${p.unidade}</td>
+                        <td>${p.data_hora}</td>
+                    </tr>`;
+                }
+                html += "</table>";
+                el.innerHTML = html;
+            } catch {
+                el.innerHTML = '<p class="erro">erro ao carregar pesagens</p>';
+            }
+        }
+
+        function atualizar() {
+            atualizarStatus();
+            atualizarPesagens();
+        }
+
+        atualizar();
+        setInterval(atualizar, 3000);
+    </script>
 </body>
 </html>

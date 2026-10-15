@@ -39,3 +39,21 @@ def salvar_pesagem(cracha, placa, peso):
 
     conexao.commit()
     conexao.close()
+
+
+def listar_pesagens(limite=20):
+    conexao = conectar()
+
+    linhas = conexao.execute(
+        """
+        SELECT id, cracha, placa, peso, unidade, data_hora
+        FROM pesagens
+        ORDER BY id DESC
+        LIMIT ?
+        """,
+        (limite,)
+    ).fetchall()
+
+    conexao.close()
+
+    return [dict(linha) for linha in linhas]
