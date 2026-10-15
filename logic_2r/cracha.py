@@ -1,7 +1,7 @@
-# pega o cracha e valida esse trem
+# Pega o crachá e valida esse trem
 
 def validar_cracha(cracha):
-    if not cracha: # se nao tiver nada nesse trem
+    if not cracha:
         return False
 
     cracha = str(cracha).strip()
@@ -12,21 +12,31 @@ def validar_cracha(cracha):
     return True
 
 
+def buscar_placa_por_cracha(cracha):
+    banco_crachas = {
+        "123456": "ABC1234",
+        "990TIZ": "A78998A"
+    }
+
+    return banco_crachas.get(cracha)
+
+
 def processar_cracha(cracha):
     if not validar_cracha(cracha):
         return {
             "erro": "Cracha invalido"
         }, 400
 
+    cracha = str(cracha).strip()
+    placa = buscar_placa_por_cracha(cracha)
+
+    if placa is None:
+        return {
+            "erro": "Cracha nao cadastrado, fiotao"
+        }, 404
+
     return {
-        "mensagem": "Cracha recebido",
-        "cracha": str(cracha).strip()
+        "cracha": cracha,
+        "placa": placa,
+        "mensagem": "Caminhao identificado"
     }, 200
-
-    def buscar_placa_por_cracha(cracha):
-        banco_crachas = {
-            "123456": "ABC1234",
-            "990TIZ": "A78998A"
-        }
-
-        return banco_crachas.get(cracha)
